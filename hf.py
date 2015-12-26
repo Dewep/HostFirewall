@@ -141,8 +141,10 @@ for port in frontend:
 
 print("")
 print("## IPTABLES")
-print("# iptables -F")
 print("# iptables -A INPUT -i eth0 -p tcp -m multiport --dports " + ",".join(ports) + " -m state --state NEW,ESTABLISHED -j ACCEPT")
+print("# iptables -A INPUT -i eth0 -p tcp -m multiport --sport " + ",".join(map(str, iptables["output"])) + " -m state --state ESTABLISHED -j ACCEPT")
 if iptables["ping"]:
     print("# iptables -A INPUT -p icmp --icmp-type echo-request -j ACCEPT")
+    print("# iptables -A INPUT -p icmp --icmp-type echo-reply -j ACCEPT")
+print("# iptables -A INPUT -p udp -i eth0 --sport 53 -j ACCEPT")
 print("# iptables -P INPUT DROP")
